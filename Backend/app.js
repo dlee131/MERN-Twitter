@@ -5,19 +5,27 @@ const debug = require('debug');
 
 const cors = require('cors');
 const csurf = require('csurf');
-const { isProduction } = require('./config/key')
 
 require('./models/User');   
-const usersRouter = require('./routes/api/users');
-const tweetsRouter = require('./routes/api/tweets');
-const csrfRouter = require('./routes/api/csrf');
+require('./config/passport');
+
+
+const passport = require('passport');
+
+
+const { isProduction } = require('./config/key')
+
 
 const app = express();
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 if (!isProduction) {
     app.use(cors());
@@ -33,7 +41,9 @@ app.use(
     })
 );
 
-
+const usersRouter = require('./routes/api/users');
+const tweetsRouter = require('./routes/api/tweets');
+const csrfRouter = require('./routes/api/csrf');
 app.use('/api/users', usersRouter);
 app.use('/api/tweets', tweetsRouter);
 app.use('/api/csrf', csrfRouter);

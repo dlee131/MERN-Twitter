@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const User = mongoose.model('User');
 
@@ -39,7 +40,6 @@ router.post('/register', async (req, res, next) => {
     email: req.body.email
   });
 
-
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
     bcrypt.hash(req.body.password, salt, async (err, hashedPassword) => {
@@ -54,8 +54,22 @@ router.post('/register', async (req, res, next) => {
       }
     })
   });
-  
+
 });
+
+router.post('/login', async (req, res, next) => {
+  passport.authenticate('local', async function(err, user) {
+    if (err) return next(err);
+    if (!user) {
+      const err = new Error('Invalid credentials');
+      err.statusCode = 400;
+      err.errors = { email: "Invalid credentials" };
+      return next(err);
+    }
+    return res.json({ user });
+  })(req, res, next);
+});
+
 
 
 
