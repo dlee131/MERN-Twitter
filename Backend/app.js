@@ -7,6 +7,7 @@ const cors = require('cors');
 const csurf = require('csurf');
 const { isProduction } = require('./config/key')
 
+require('./models/User');   
 const usersRouter = require('./routes/api/users');
 const tweetsRouter = require('./routes/api/tweets');
 const csrfRouter = require('./routes/api/csrf');
@@ -44,7 +45,7 @@ app.use((req, res, next) => {
   });
   
   const serverErrorLogger = debug('backend:error');
-  
+
   app.use((err, req, res, next) => {
     serverErrorLogger(err);
     const statusCode = err.statusCode || 500;
