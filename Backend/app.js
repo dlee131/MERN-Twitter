@@ -6,6 +6,7 @@ const cors = require('cors');
 const csurf = require('csurf');
 
 require('./models/User');   
+require('./models/Tweet');
 require('./config/passport');
 
 
